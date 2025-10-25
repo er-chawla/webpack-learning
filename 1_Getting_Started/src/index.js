@@ -1,4 +1,7 @@
-function buttonClickFunction() {
+import _ from 'lodash';
+
+const button = document.getElementById('buttonClick');
+button.addEventListener('click', () => {
     const el = document.getElementById('header');
 
     const list = document.getElementById('list');
@@ -12,4 +15,4 @@ function buttonClickFunction() {
     });
 
     el.innerHTML = 'My journey of webpack has started';
-}
+});
