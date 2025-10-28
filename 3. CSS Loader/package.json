@@ -1,0 +1,21 @@
+{
+    "name": "1_getting_started",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --config webpack.config.js --mode development"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "css-loader": "^7.1.2",
+        "style-loader": "^4.0.0",
+        "webpack": "^5.102.1",
+        "webpack-cli": "^6.0.1"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21"
+    }
+}
