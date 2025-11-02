@@ -1,23 +1,17 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { chunk } = require('lodash');
+const { PurgeCSSPlugin } = require('purgecss-webpack-plugin');
+const glob = require('glob');
+const { merge } = require('webpack-merge');
+const commonConfig = require('./webpack.common');
 
-module.exports = {
-    entry: {
-        index: './src/index.js',
-        courses: './src/pages/courses.js',
-    },
-    output: {
-        filename: '[name].[contenthash].js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-    },
-    devServer: {
-        static: './dist',
-    },
+const purgePath = {
+    src: path.join(__dirname, 'src'),
+};
+
+module.exports = merge(commonConfig, {
+    mode: 'production',
     module: {
         rules: [
             {
@@ -42,18 +36,6 @@ module.exports = {
         ],
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            chunks: ['index'],
-            inject: true,
-            filename: 'index.html',
-        }),
-        new HtmlWebpackPlugin({
-            template: './src/pages/courses.html',
-            chunks: ['courses'],
-            inject: true,
-            filename: 'courses.html',
-        }),
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -64,14 +46,12 @@ module.exports = {
             ],
         }),
         //new BundleAnalyzerPlugin({}),
+        new PurgeCSSPlugin({
+            paths: glob.sync(`${purgePath.src}/**/*`, { nodir: true }),
+            safelist: ['dummy-css'],
+        }),
         new MiniCssExtractPlugin({
             filename: 'bundle.css',
         }),
     ],
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-            name: 'vendor',
-        },
-    },
-};
+});

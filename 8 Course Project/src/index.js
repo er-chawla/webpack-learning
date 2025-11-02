@@ -1,5 +1,4 @@
 import Typed from 'typed.js';
-import $ from 'jquery';
 import * as toastr from 'toastr';
 import * as validate from 'validate.js';
 import _ from 'lodash';
