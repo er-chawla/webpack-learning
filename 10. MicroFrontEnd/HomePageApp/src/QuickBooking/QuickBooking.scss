@@ -1,0 +1,18 @@
+.quick-booking-container {
+    background-color: #65956d;
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    justify-content: space-around;
+    img {
+        padding-left: 15px;
+        max-width: 10%;
+    }
+    .quick-booking-section {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 90%;
+        gap: 10px;
+    }
+}
