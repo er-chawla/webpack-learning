@@ -1,4 +1,4 @@
-import HomeContent from './HomeContent/HomeContent.jsx';
+import HomeContent from './components/HomeContent/HomeContent.jsx';
 import './App.scss';
 const App = () => {
     return (

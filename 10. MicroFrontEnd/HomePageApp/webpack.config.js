@@ -23,11 +23,16 @@ module.exports = {
         }),
         new MiniCSSWebpackPlugin(),
         new ModuleFederationPlugin({
-            name: 'home',
+            name: 'homePage',
             filename: 'remoteEntry.js',
             remotes: {
                 components: 'components@http://localhost:3001/remoteEntry.js',
+                movieapp: 'movieapp@http://localhost:9000/remoteEntry.js',
             },
+            exposes: {
+                './HomePage': './src/components/HomeContent/HomeContent.jsx',
+            },
+            shared: ['react', 'react-dom'],
         }),
     ],
     module: {
@@ -74,7 +79,7 @@ module.exports = {
     },
     optimization: {
         splitChunks: {
-            chunks: 'all',
+            chunks: 'async',
         },
     },
 };

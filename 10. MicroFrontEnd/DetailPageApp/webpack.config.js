@@ -1,45 +1,34 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
-
 module.exports = {
     mode: 'development',
     entry: './src/index.js',
     output: {
         filename: '[name].[contenthash].js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'dist'),
     },
     devServer: {
         static: {
             directory: 'dist',
         },
-        port: '3002',
+        port: 3003,
         open: true,
-        historyApiFallback: true,
     },
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                include: path.resolve(__dirname, 'src'),
-                exclude: path.resolve(__dirname, 'node_modules'),
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
                             presets: [
-                                [
-                                    '@babel/preset-env',
-                                    {
-                                        targets: 'defaults',
-                                    },
-                                ],
+                                ['@babel/preset-env', { targets: 'defaults' }],
                                 [
                                     '@babel/preset-react',
-                                    {
-                                        runtime: 'automatic',
-                                    },
+                                    { runtime: 'automatic' },
                                 ],
                             ],
                         },
@@ -61,13 +50,14 @@ module.exports = {
             template: './src/index.html',
             filename: 'index.html',
         }),
+
         new MiniCSSExtractPlugin(),
         new ModuleFederationPlugin({
-            name: 'seatSelection',
+            name: 'detailPage',
             filename: 'remoteEntry.js',
             exposes: {
-                './SeatSelection':
-                    './src/components/SeatSelectionContent/SeatSelectionContent.jsx',
+                './DetailPage':
+                    './src/components/DetailContent/DetailsContent.jsx',
             },
             remotes: {
                 movieapp: 'movieapp@http://localhost:9000/remoteEntry.js',

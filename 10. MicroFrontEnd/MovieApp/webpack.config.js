@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
-
 module.exports = {
     mode: 'development',
     entry: './src/index.js',
@@ -14,7 +13,7 @@ module.exports = {
         static: {
             directory: 'dist',
         },
-        port: '3002',
+        port: 9000,
         open: true,
         historyApiFallback: true,
     },
@@ -22,24 +21,15 @@ module.exports = {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                include: path.resolve(__dirname, 'src'),
-                exclude: path.resolve(__dirname, 'node_modules'),
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
                             presets: [
-                                [
-                                    '@babel/preset-env',
-                                    {
-                                        targets: 'defaults',
-                                    },
-                                ],
+                                ['@babel/preset-env', { targets: 'defaults' }],
                                 [
                                     '@babel/preset-react',
-                                    {
-                                        runtime: 'automatic',
-                                    },
+                                    { runtime: 'automatic' },
                                 ],
                             ],
                         },
@@ -54,30 +44,36 @@ module.exports = {
                 test: /\.s[ac]ss$/,
                 use: [MiniCSSExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
+            {
+                test: /\.(png|jpg|jpeg|gif|svg)/,
+                type: 'asset/resource',
+            },
         ],
     },
     plugins: [
+        new ModuleFederationPlugin({
+            name: 'movieapp',
+            filename: 'remoteEntry.js',
+            remotes: {
+                homePage: 'homePage@http://localhost:3000/remoteEntry.js',
+                detailPage: 'detailPage@http://localhost:3003/remoteEntry.js',
+                seatSelection:
+                    'seatSelection@http://localhost:3002/remoteEntry.js',
+            },
+            exposes: {
+                './MovieData': './src/movieObservable.js',
+            },
+            shared: ['react', 'react-dom'],
+        }),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename: 'index.html',
         }),
         new MiniCSSExtractPlugin(),
-        new ModuleFederationPlugin({
-            name: 'seatSelection',
-            filename: 'remoteEntry.js',
-            exposes: {
-                './SeatSelection':
-                    './src/components/SeatSelectionContent/SeatSelectionContent.jsx',
-            },
-            remotes: {
-                movieapp: 'movieapp@http://localhost:9000/remoteEntry.js',
-            },
-            shared: ['react', 'react-dom'],
-        }),
     ],
     optimization: {
         splitChunks: {
-            chunks: 'async',
+            chunks: 'all',
         },
     },
 };
